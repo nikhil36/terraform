@@ -19,9 +19,10 @@ Steps to get started:
 4. Run `terraform apply "sample.plan"` - This command applies changes from a specific plan.
 
 5. Run `terraform plan -destroy -out destroy.plan` - Generate the plan
+
     `terraform apply destroy.plan` - Execute the plan
     
-   Good to clean up resources after ending a development session.
+    Good to clean up resources after ending a development session.
 
 
 
