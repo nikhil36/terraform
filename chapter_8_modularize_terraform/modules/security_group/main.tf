@@ -1,32 +1,6 @@
-#Continuation from Chapter 4
-
-provider "aws" {
-    profile     = "terraform"
-    region      = "us-east-1"   
-}
-
-resource "aws_s3_bucket" "terraform_course" {
-    bucket = "my-private-bucket-20210610"
-    acl    = "private"
-    
-    tags   = {
-        "team" = "developers"
-    }
-  
-}
-
-resource "aws_default_vpc" "default" {
-      
-    tags = {
-      "Terraform" = "true"
-    }
-
-}
-
-
 resource "aws_security_group" "web_security_group" {
-    name        = "web_security_group"
-    description = "Allow standard http and https ports inbound and outbound"
+    name        = var.name
+    description = var.description
 
     ingress = [ {
       cidr_blocks      = ["0.0.0.0/0"]
@@ -63,30 +37,9 @@ resource "aws_security_group" "web_security_group" {
     } ]
     
     tags = {
-      "Terraform" = "true"
+      "terraform" = var.is_terraform
+      "team"      = var.team
     }
 
     
-}
-
-resource "aws_instance" "my_sample_instance" {
-  ami            = "ami-08845e76ce04d388e"
-  instance_type  = "t2.nano"
-  vpc_security_group_ids = [
-     aws_security_group.web_security_group.id # reusing a value from the security groups defined above
-  ]
-
-  tags = {
-      "Terraform" = "true"
-  }
-}
-
-resource "aws_eip" "web_static_ip" {
-
-  # Use `terraform show` to ge the static IP
-  instance = aws_instance.my_sample_instance.id
-  tags = {
-    "Terraform" = "true"
-  }
- 
 }

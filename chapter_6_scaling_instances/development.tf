@@ -1,4 +1,4 @@
-#Continuation from Chapter 4
+#Continuation from Chapter 5
 
 provider "aws" {
     profile     = "terraform"
@@ -70,6 +70,8 @@ resource "aws_security_group" "web_security_group" {
 }
 
 resource "aws_instance" "my_sample_instance" {
+  count          = 2 # defining 2 instances here
+
   ami            = "ami-08845e76ce04d388e"
   instance_type  = "t2.nano"
   vpc_security_group_ids = [
@@ -81,10 +83,15 @@ resource "aws_instance" "my_sample_instance" {
   }
 }
 
-resource "aws_eip" "web_static_ip" {
-
+resource "aws_eip_association" "development_web" {
   # Use `terraform show` to ge the static IP
-  instance = aws_instance.my_sample_instance.id
+  # Elastic IP association is changed and its using the array syntax now
+  instance_id   = aws_instance.my_sample_instance[0].id 
+  allocation_id = aws_eip.web_static_ip.id
+  
+}
+
+resource "aws_eip" "web_static_ip" {
   tags = {
     "Terraform" = "true"
   }
